@@ -1,0 +1,396 @@
+{
+  "datasets": {
+    "faas_eligible_vehicles": {
+      "path": "data_csv/faas_eligible_vehicles.csv",
+      "description": "Inventory of lease-return vehicles eligible for the Fleet-as-a-Service (FaaS) program. Each row is one vehicle that has been grounded at an originating dealer and is available for reallocation to a FaaS dealer. Contains vehicle attributes, lease terms, valuation, and the grounding dealer location.",
+      "row_count": 650,
+      "columns": {
+        "VIN": {
+          "type": "string",
+          "semantic": "Vehicle Identification Number. A unique, anonymized identifier for each physical vehicle in the eligible pool (format: VIN_XXXXXXXXXX###).",
+          "example": "VIN_XXXXXXXXXX001",
+          "role": "primary_key"
+        },
+        "YEAR": {
+          "type": "int",
+          "semantic": "Model year of the vehicle, indicating the manufacturing/design year. Observed values: 2022, 2023, 2024.",
+          "example": "2023",
+          "role": "dimension"
+        },
+        "MAKE_NAME": {
+          "type": "string",
+          "semantic": "Brand or manufacturer name of the vehicle. In this dataset all vehicles are HYUNDAI.",
+          "example": "HYUNDAI",
+          "role": "dimension"
+        },
+        "MODEL_NAME": {
+          "type": "string",
+          "semantic": "Model name of the vehicle within the make. In this dataset all vehicles are IONIQ 5 (an electric vehicle).",
+          "example": "IONIQ 5",
+          "role": "dimension"
+        },
+        "SERIES_NAME": {
+          "type": "string",
+          "semantic": "Trim or series level within the model, indicating the equipment/feature package. Observed values: SE (base), SEL (mid-tier), Limited (top-tier).",
+          "example": "SEL",
+          "role": "dimension"
+        },
+        "ODOMETER": {
+          "type": "int",
+          "semantic": "Current mileage on the vehicle odometer at the time of grounding, measured in miles. Range: 6,500 to 44,800.",
+          "example": "12450",
+          "role": "measure"
+        },
+        "GRADE": {
+          "type": "string",
+          "semantic": "Condition grade assigned to the vehicle upon inspection at lease return. A = excellent condition, B = good/average condition, C = below-average or fair condition.",
+          "example": "A",
+          "role": "dimension"
+        },
+        "MATURITY_DATE": {
+          "type": "string",
+          "semantic": "The original lease maturity date (MM/DD/YYYY format). This is the contractual end date of the lease agreement, which may differ from the actual grounding date.",
+          "example": "11/15/2025",
+          "role": "dimension"
+        },
+        "RESIDUAL": {
+          "type": "int",
+          "semantic": "The contractual residual value of the vehicle at lease end, in US dollars. This is the price set at lease origination that the lessee could purchase the vehicle for. Range: $14,200 to $24,900.",
+          "example": "22500",
+          "role": "measure"
+        },
+        "GROUNDING_DATE": {
+          "type": "string",
+          "semantic": "The date (MM/DD/YYYY format) when the vehicle was physically returned (grounded) by the lessee at the originating dealer. This is when the vehicle became available for FaaS reallocation.",
+          "example": "12/20/2025",
+          "role": "dimension"
+        },
+        "DEALER_NAME": {
+          "type": "string",
+          "semantic": "Human-readable name of the grounding dealer where the lessee returned the vehicle at lease end. IMPORTANT: these are originating/grounding dealers, NOT FaaS dealers. Same column name exists in dealer_inventory but refers to a different entity (FaaS dealers).",
+          "example": "Dealer_A",
+          "role": "dimension"
+        },
+        "DEALER_CODE": {
+          "type": "string",
+          "semantic": "Unique identifier code for the grounding dealer (format: D###, ranging from D001 to D050). Foreign key to dealer_distance_matrix.GROUNDING_DEALER_CODE. IMPORTANT: this is a different code namespace from FaaS dealer codes (FD##) used in dealer_inventory and dealer_utilization.",
+          "example": "D001",
+          "role": "foreign_key"
+        },
+        "LOCATION": {
+          "type": "string",
+          "semantic": "City and state of the grounding dealer in 'City, ST' format. Same column name exists in dealer_inventory but refers to FaaS dealer locations, not grounding dealer locations.",
+          "example": "Los Angeles, CA",
+          "role": "dimension"
+        },
+        "STATE": {
+          "type": "string",
+          "semantic": "Two-letter US state abbreviation for the grounding dealer's location. Can be joined to property_tax_by_state.STATE and sales_tax_by_state.STATE, but note that for cost modeling the FaaS dealer's state (destination) is typically the relevant tax jurisdiction, not this origin state.",
+          "example": "CA",
+          "role": "foreign_key"
+        },
+        "ZIPCODE": {
+          "type": "int",
+          "semantic": "US ZIP code of the grounding dealer's location. Provides more granular geographic information than state alone.",
+          "example": "90210",
+          "role": "dimension"
+        },
+        "TERM_TYPE": {
+          "type": "string",
+          "semantic": "Type of FaaS subscription term the vehicle is eligible for. FT = Fixed Term (committed subscription period), ET = Early Termination eligible (flexible subscription that can be ended early).",
+          "example": "FT",
+          "role": "dimension"
+        },
+        "TERM": {
+          "type": "int",
+          "semantic": "Length of the FaaS subscription term in months. In this dataset all values are 13 months.",
+          "example": "13",
+          "role": "measure"
+        },
+        "CURRENT_ITERATION": {
+          "type": "int",
+          "semantic": "The current auction/offering iteration number for this vehicle. Starts at 1 when the vehicle first enters the FaaS eligible pool and increments each time the vehicle is re-offered after not being allocated. Higher values indicate the vehicle has been passed over in prior allocation rounds. Observed values: 1, 2, 3, 4.",
+          "example": "2",
+          "role": "measure"
+        },
+        "BLACKBOOK_RETAIL_CLEAN_AMOUNT": {
+          "type": "int",
+          "semantic": "The Black Book retail clean valuation in US dollars. This is a third-party market valuation representing the estimated retail price of the vehicle in clean (good) condition. Used as a benchmark for pricing and revenue estimation. Range: $25,700 to $39,900.",
+          "example": "35200",
+          "role": "measure"
+        },
+        "BATCH_ID": {
+          "type": "string",
+          "semantic": "Identifier for the processing batch this vehicle belongs to (format: BATCH_###). Vehicles are grouped into batches for operational processing. Observed values: BATCH_001, BATCH_002, BATCH_003.",
+          "example": "BATCH_001",
+          "role": "dimension"
+        }
+      }
+    },
+    "dealer_inventory": {
+      "path": "data_csv/dealer_inventory.csv",
+      "description": "Master list of FaaS (Fleet-as-a-Service) dealer locations that receive and manage subscription vehicles. Contains each dealer's physical capacity, current delivered vehicle count, and geographic coordinates. These are the destination dealers to which eligible vehicles can be allocated.",
+      "row_count": 30,
+      "columns": {
+        "DEALER_CODE": {
+          "type": "string",
+          "semantic": "Unique identifier for a FaaS dealer (format: FD##, ranging from FD01 to FD30). This is the primary key for FaaS dealers. IMPORTANT: same column name as faas_eligible_vehicles.DEALER_CODE but different namespace and meaning -- here it identifies FaaS destination dealers (FD##), there it identifies grounding dealers (D###).",
+          "example": "FD01",
+          "role": "primary_key"
+        },
+        "DEALER_NAME": {
+          "type": "string",
+          "semantic": "Human-readable name of the FaaS dealer using NATO phonetic alphabet naming convention. IMPORTANT: same column name as faas_eligible_vehicles.DEALER_NAME but different meaning -- here it refers to FaaS destination dealers, there it refers to grounding/originating dealers.",
+          "example": "FaaS_Dealer_Alpha",
+          "role": "dimension"
+        },
+        "LOCATION": {
+          "type": "string",
+          "semantic": "City and state of the FaaS dealer in 'City, ST' format. IMPORTANT: same column name as faas_eligible_vehicles.LOCATION but refers to FaaS dealer locations, not grounding dealer locations.",
+          "example": "Miami, FL",
+          "role": "dimension"
+        },
+        "STATE": {
+          "type": "string",
+          "semantic": "Two-letter US state abbreviation for the FaaS dealer's location. Joins to property_tax_by_state.STATE and sales_tax_by_state.STATE to determine applicable tax rates at the vehicle's destination. This is typically the tax-relevant jurisdiction for subscription pricing.",
+          "example": "FL",
+          "role": "foreign_key"
+        },
+        "ZIPCODE": {
+          "type": "int",
+          "semantic": "US ZIP code of the FaaS dealer's location.",
+          "example": "33101",
+          "role": "dimension"
+        },
+        "TRUE_CAPACITY": {
+          "type": "int",
+          "semantic": "Maximum number of vehicles the FaaS dealer can hold on their lot at any given time. Static dealer-master parameter, hard upper bound used by the ILP slot constraint. Range: 20 to 50. NOTE: this is NOT what the user-facing label 'Capacity' means — UI 'Capacity' is computed as `IN_SERVICE - RENTED` (slots still open, i.e. additional cars the dealer can still accept). The data does not model where the non-rented cars physically are; treat the difference as arithmetic, not a physical-location decomposition. TRUE_CAPACITY is engine-internal scaffolding and is rarely surfaced to users on its own.",
+          "example": "45",
+          "role": "measure"
+        },
+        "DELIVERED_COUNT": {
+          "type": "int",
+          "semantic": "Current number of vehicles accounted to this FaaS dealer — includes both cars in the dealer's on-lot inventory AND cars currently rented out to customers. A rented car still consumes a slot (the slot is the dealer's allocation cap, not their physical parking footprint). DELIVERED_COUNT <= TRUE_CAPACITY. REMAINING_CAPACITY is derived as TRUE_CAPACITY - DELIVERED_COUNT - in_transit_count (the in_transit term is counted live from fleet_inventory.STATUS = Transporting). Do NOT subtract RENTED from REMAINING_CAPACITY — a rented car still consumes a slot at the dealer.",
+          "example": "38",
+          "role": "measure"
+        },
+        "LATITUDE": {
+          "type": "float",
+          "semantic": "Geographic latitude coordinate of the FaaS dealer's location in decimal degrees (WGS84). Used for mapping and distance calculations.",
+          "example": "25.7617",
+          "role": "dimension"
+        },
+        "LONGITUDE": {
+          "type": "float",
+          "semantic": "Geographic longitude coordinate of the FaaS dealer's location in decimal degrees (WGS84). Negative values indicate Western Hemisphere.",
+          "example": "-80.1918",
+          "role": "dimension"
+        }
+      }
+    },
+    "dealer_utilization": {
+      "path": "data_csv/dealer_utilization.csv",
+      "description": "Current utilization metrics for each FaaS dealer, showing how many of the vehicles on their lot are actively rented out to subscribers versus total in-service vehicles. Used to measure dealer performance and identify underutilized locations that may benefit from receiving more vehicles.",
+      "row_count": 30,
+      "columns": {
+        "DEALER_CODE": {
+          "type": "string",
+          "semantic": "Unique identifier for the FaaS dealer (format: FD##). Joins 1:1 with dealer_inventory.DEALER_CODE and dealer_distance_matrix.FAAS_DEALER_CODE. NOTE: in the source CSV this column is named DEALER_ID; the agent sandbox (query_data / inspect_data) renames it to DEALER_CODE on load to keep schema uniform across all dealer-related datasets.",
+          "example": "FD01",
+          "role": "primary_key"
+        },
+        "DEALER_NAME": {
+          "type": "string",
+          "semantic": "Human-readable name of the FaaS dealer. NOTE: in the source CSV this column is named NAME; the agent sandbox renames it to DEALER_NAME on load (matches dealer_inventory.DEALER_NAME).",
+          "example": "FaaS_Dealer_Alpha",
+          "role": "dimension"
+        },
+        "RENTED": {
+          "type": "int",
+          "semantic": "Demand signal under the additive scoring mode (production default). Number of vehicles currently rented out (actively subscribed) at this FaaS dealer. RENTED <= IN_SERVICE. Enters the additive alloc_score as `w_rented × RENTED` with NO normalization — absolute count is preserved so a 200-RENTED dealer's score is invariant to other dealers' data (2026-04-21 additive pivot per the client's 2026-04-17 `22% × 114 = 25 cars rented, that's what matters`). Under the bucket scoring mode (calibration, 2026-05-21 spec) RENTED is NOT in the scoring formula; IN_SERVICE drives the tier instead. See docs/bucket_algorithm.md.",
+          "example": "32",
+          "role": "measure"
+        },
+        "IN_SERVICE": {
+          "type": "int",
+          "semantic": "Total number of vehicles currently in service (available for rent or already rented) at this FaaS dealer. Should correspond to dealer_inventory.DELIVERED_COUNT. Relationship: IN_SERVICE = RENTED + (available but not yet rented vehicles). Scoring role depends on mode. Under the additive mode (production default, 2026-04-21) IN_SERVICE is display-only and RENTED is the demand signal. Under the bucket mode (calibration, 2026-05-21 spec) IN_SERVICE drives the max-anchored range tier that selects bucket_mult; see docs/bucket_algorithm.md.",
+          "example": "38",
+          "role": "measure"
+        },
+        "UTILIZATION": {
+          "type": "float",
+          "semantic": "Utilization rate as a percentage, calculated as (RENTED / IN_SERVICE) * 100. Measures how effectively the dealer converts available inventory into active subscriptions. Range: 33.3% to 95.6%. Higher values indicate stronger demand relative to supply. Under additive scoring (production default) UTILIZATION feeds the score directly as `w_util × UTIL_RATE`. Under bucket scoring (2026-05-21 spec) UTILIZATION is display-only; the util-side score is a tier multiplier on IN_SERVICE.",
+          "example": "84.2",
+          "role": "measure"
+        }
+      }
+    },
+    "dealer_distance_matrix": {
+      "path": "data_csv/dealer_distance_matrix.csv",
+      "description": "Pairwise distance matrix between every grounding (originating) dealer and every FaaS (destination) dealer. Contains 1,500 rows representing all 50 grounding dealers x 30 FaaS dealers combinations. Used to calculate transportation costs when allocating a vehicle from its grounding location to a FaaS dealer.",
+      "row_count": 1500,
+      "columns": {
+        "GROUNDING_DEALER_CODE": {
+          "type": "string",
+          "semantic": "Identifier for the originating/grounding dealer where the vehicle was returned at lease end (format: D###, ranging from D001 to D050). Foreign key to faas_eligible_vehicles.DEALER_CODE.",
+          "example": "D001",
+          "role": "foreign_key"
+        },
+        "FAAS_DEALER_CODE": {
+          "type": "string",
+          "semantic": "Identifier for the FaaS destination dealer that could receive the vehicle (format: FD##, ranging from FD01 to FD30). Foreign key to dealer_inventory.DEALER_CODE and dealer_utilization.DEALER_ID.",
+          "example": "FD01",
+          "role": "foreign_key"
+        },
+        "DISTANCE_MILES": {
+          "type": "int",
+          "semantic": "Haversine (straight-line) distance in miles between the grounding dealer and the FaaS dealer. Underestimates actual driving distance by ~20-30%. Used to estimate transportation/logistics cost. Range: 67 to 1,201 miles.",
+          "example": "267",
+          "role": "measure"
+        }
+      }
+    },
+    "property_tax_by_state": {
+      "path": "data_csv/property_tax_by_state.csv",
+      "description": "Lookup table of annual personal property tax rates on vehicles by US state (plus DC). States with 0.0% do not levy a personal property tax on vehicles. Used to calculate the ongoing tax cost of holding/operating a vehicle at a FaaS dealer in a given state.",
+      "row_count": 51,
+      "columns": {
+        "STATE": {
+          "type": "string",
+          "semantic": "Two-letter US state abbreviation (plus DC for District of Columbia). Primary key for this table. Joins to faas_eligible_vehicles.STATE (origin) and dealer_inventory.STATE (destination). For cost modeling, the FaaS dealer's state (destination) is typically the relevant jurisdiction.",
+          "example": "CA",
+          "role": "primary_key"
+        },
+        "PROPERTY_TAX_RATE": {
+          "type": "string",
+          "semantic": "Annual personal property tax rate on vehicles as a percentage string with '%' suffix (e.g., '2.8%'). Must be parsed by stripping the '%' suffix and dividing by 100 for calculations. Applied to the vehicle's assessed value annually. Range: 0.0% to 4.0%. Many states are 0.0% (no vehicle property tax).",
+          "example": "2.8%",
+          "role": "measure"
+        }
+      }
+    },
+    "sales_tax_by_state": {
+      "path": "data_csv/sales_tax_by_state.csv",
+      "description": "Lookup table of state-level sales tax rates by US state. Applied to vehicle transactions (purchase/subscription) at the point of sale. Used to calculate the tax component of subscription pricing at each FaaS dealer's state. Does not include DC.",
+      "row_count": 50,
+      "columns": {
+        "STATE": {
+          "type": "string",
+          "semantic": "Two-letter US state abbreviation. Primary key for this table. Joins to faas_eligible_vehicles.STATE (origin) and dealer_inventory.STATE (destination). Sales tax is typically applied based on the FaaS dealer's state where the subscription transaction occurs, not the grounding state.",
+          "example": "AL",
+          "role": "primary_key"
+        },
+        "SALES_TAX_RATE": {
+          "type": "string",
+          "semantic": "State-level sales tax rate as a percentage string with '%' suffix (e.g., '7.25%'). Must be parsed by stripping the '%' suffix and dividing by 100 for calculations. Range: 0.0% (no-sales-tax states: AK, DE, MT, NH, OR) to 8.0% (NY). Does not include local or county add-on taxes.",
+          "example": "7.25%",
+          "role": "measure"
+        }
+      }
+    },
+    "zip_centroids": {
+      "path": "data_csv/zip_centroids.csv",
+      "description": "Geographic lookup table mapping 5-digit US ZIP codes to their centroid latitude/longitude. Read by the engine at load time and used to geocode grounding-dealer and FaaS-dealer ZIPs for the allocation map and, indirectly, for distance-matrix validation. The engine raises a hard error if any ZIP referenced in faas_eligible_vehicles.ZIPCODE or dealer_inventory.ZIPCODE is missing from this file.",
+      "row_count": 41489,
+      "columns": {
+        "ZIPCODE": {
+          "type": "string",
+          "semantic": "5-digit US ZIP code, zero-padded when numeric (e.g. '02101' for Boston). Primary key. Foreign key target for faas_eligible_vehicles.ZIPCODE (grounding-dealer ZIP) and dealer_inventory.ZIPCODE (FaaS-dealer ZIP). Every ZIP referenced by either of those tables must appear here or the engine crashes at load_data() time.",
+          "example": "90210",
+          "role": "primary_key"
+        },
+        "LATITUDE": {
+          "type": "float",
+          "semantic": "Latitude of the ZIP code's centroid, in decimal degrees. Used for the allocation map's source dots and, when joined through dealer_inventory, for dealer dots. Range observed: -89.99 to 76.53 (includes a few non-CONUS territories).",
+          "example": "34.0901",
+          "role": "measure"
+        },
+        "LONGITUDE": {
+          "type": "float",
+          "semantic": "Longitude of the ZIP code's centroid, in decimal degrees. Paired with LATITUDE for mapping. Range observed: -177.39 to 178.88 (includes a few non-CONUS territories).",
+          "example": "-118.4065",
+          "role": "measure"
+        }
+      }
+    },
+    "fleet_inventory": {
+      "path": "data_csv/fleet_inventory.csv",
+      "description": "Operational fleet tracking file. Each row is one FaaS-eligible vehicle with its current lifecycle status (Grounded, Transporting, Delivered, Incoming). Updated by the allocation confirm/reset flow. This is the single source of truth for which vehicles are available, in transit, or delivered.",
+      "row_count": 650,
+      "columns": {
+        "VIN": {
+          "type": "string",
+          "semantic": "Vehicle Identification Number matching faas_eligible_vehicles.VIN.",
+          "example": "VIN_XXXXXXXXXX001",
+          "role": "primary_key"
+        },
+        "YEAR": {
+          "type": "int",
+          "semantic": "Model year of the vehicle.",
+          "example": "2023",
+          "role": "dimension"
+        },
+        "MAKE": {
+          "type": "string",
+          "semantic": "Vehicle manufacturer. All HYUNDAI in current data.",
+          "example": "HYUNDAI",
+          "role": "dimension"
+        },
+        "MODEL": {
+          "type": "string",
+          "semantic": "Vehicle model and trim (e.g., IONIQ 5 SEL, IONIQ 5 SE, IONIQ 5 Limited).",
+          "example": "IONIQ 5 SEL",
+          "role": "dimension"
+        },
+        "SOURCE": {
+          "type": "string",
+          "semantic": "Grounding dealer code (D###). Matches faas_eligible_vehicles.DEALER_CODE.",
+          "example": "D001",
+          "role": "foreign_key"
+        },
+        "SOURCE_CITY": {
+          "type": "string",
+          "semantic": "City name of the grounding dealer.",
+          "example": "Los Angeles",
+          "role": "dimension"
+        },
+        "SOURCE_STATE": {
+          "type": "string",
+          "semantic": "Two-letter state abbreviation of the grounding dealer.",
+          "example": "CA",
+          "role": "dimension"
+        },
+        "RESIDUAL": {
+          "type": "int",
+          "semantic": "Contractual residual value in USD.",
+          "example": "22500",
+          "role": "measure"
+        },
+        "STATUS": {
+          "type": "string",
+          "semantic": "Current lifecycle status: Grounded (available for allocation), Transporting (confirmed and in transit), Delivered (arrived at FaaS dealer), Incoming (scheduled arrival).",
+          "example": "Grounded",
+          "role": "dimension"
+        },
+        "WEEK": {
+          "type": "string",
+          "semantic": "The grounding week (YYYY-MM-DD format, typically a Monday). Groups vehicles into weekly cohorts.",
+          "example": "2025-12-15",
+          "role": "dimension"
+        },
+        "ASSIGNED_DEALER": {
+          "type": "string",
+          "semantic": "FaaS dealer code (FD##) assigned to this vehicle after allocation confirmation. Empty/NaN if not yet assigned.",
+          "example": "FD01",
+          "role": "foreign_key"
+        },
+        "NOTES": {
+          "type": "string",
+          "semantic": "Free-text notes about the vehicle's status or assignment.",
+          "example": "Grounded at Dealer_A",
+          "role": "dimension"
+        }
+      }
+    }
+  }
+}

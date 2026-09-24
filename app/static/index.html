@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FaaS Optimizer</title>
+  <link rel="icon" type="image/png" href="/static/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+  <script src="https://unpkg.com/deck.gl@9.1.14/dist.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="/static/style.css?v=demo-pipeline-20260923">
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="logo"><span>●</span> FaaS Optimizer</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchPage('home')">Home</button>
+    <button class="nav-tab" onclick="switchPage('fleet')">Fleet Inventory</button>
+    <button class="nav-tab" onclick="switchPage('weekly')">Weekly Allocation</button>
+    <button class="nav-tab" onclick="switchPage('overview')">Batch Overview</button>
+  </div>
+  <div class="header-actions">
+    <button class="header-btn" onclick="resetAll()" title="Reset to original test state">Reset</button>
+  </div>
+</div>
+
+<!-- App Shell: Pages + Chat -->
+<div class="app-shell">
+
+  <!-- Page Container (left) -->
+  <div class="page-container" id="page-container">
+
+    <!-- PAGE 0: Home (fleet-wide brief — populated by renderHome()) -->
+    <div class="page active" id="page-home">
+      <!-- Hero (renderHome writes inside) -->
+      <section class="overview-hero" id="home-hero">
+        <div id="home-hero-content">
+          <div class="loading-state"><div class="spinner"></div> Loading home overview…</div>
+        </div>
+      </section>
+
+      <!-- Trends · last 8 weeks -->
+      <div class="section-head">
+        <h2>Trends</h2>
+        <p id="home-trends-sub">Last 8 weeks</p>
+      </div>
+      <div class="row" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;" id="home-trends-grid">
+        <!-- 4 trend cards rendered by renderHomeTrends() -->
+      </div>
+
+      <!-- Fleet State -->
+      <div class="section-head">
+        <h2>Fleet state</h2>
+        <p>650 vehicles</p>
+      </div>
+      <div style="display: grid; grid-template-columns: 5fr 7fr; gap: 12px;">
+        <div class="trend-card" id="home-fleet-status-card">
+          <div class="trend-card-label" style="margin-bottom: 10px">Status distribution</div>
+          <div id="chart-status-donut" style="min-height: 160px"></div>
+        </div>
+        <div class="trend-card" id="home-fleet-pipeline-card">
+          <div class="trend-card-label" id="home-pipeline-label" style="margin-bottom: 10px">Pipeline by week</div>
+          <div id="chart-pipeline" style="min-height: 160px"></div>
+        </div>
+      </div>
+
+      <!-- Dealer Performance -->
+      <div class="section-head">
+        <h2>Dealer performance</h2>
+        <p>30 dealers</p>
+      </div>
+
+      <!-- Dealer map (full-width, MapLibre + deck.gl) -->
+      <div class="trend-card" style="padding: 0; position: relative; overflow: hidden; margin-bottom: 12px;">
+        <!-- Top-left: title -->
+        <div style="position: absolute; top: 12px; left: 16px; z-index: 5; pointer-events: none;">
+          <div class="trend-card-label" style="background: rgba(4,6,10,0.7); padding: 4px 9px; border-radius: 6px; border: 1px solid var(--border);">Dealer map</div>
+        </div>
+        <!-- Top-right: layer toggles -->
+        <div style="position: absolute; top: 12px; right: 12px; z-index: 5; display: flex; gap: 6px;">
+          <button class="map-toggle-btn faas active" id="toggle-faas" onclick="toggleHomeMapLayer('faas')">
+            <span class="dot"></span> FaaS <span class="map-toggle-count" id="toggle-faas-count">—</span>
+          </button>
+          <button class="map-toggle-btn grounding" id="toggle-grounding" onclick="toggleHomeMapLayer('grounding')">
+            <span class="dot"></span> Grounding <span class="map-toggle-count" id="toggle-grounding-count">—</span>
+          </button>
+        </div>
+        <div id="home-dealer-map" style="height: 380px; border-radius: 14px; position: relative;"></div>
+        <!-- Bottom-right: util band legend -->
+        <div style="position: absolute; bottom: 12px; right: 12px; z-index: 5; background: rgba(4,6,10,0.85); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 8px; padding: 7px 11px;">
+          <div class="heatmap-legend" style="margin: 0; gap: 12px;">
+            <span><span class="swatch util-vhigh"></span> ≥90%</span>
+            <span><span class="swatch util-high"></span> 75–89%</span>
+            <span><span class="swatch util-good"></span> 65–74%</span>
+            <span><span class="swatch util-mid"></span> 50–64%</span>
+            <span><span class="swatch util-low"></span> 40–49%</span>
+            <span><span class="swatch util-vlow"></span> &lt;40%</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 7fr 5fr; gap: 12px;">
+        <div class="trend-card">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px">
+            <div class="trend-card-label">Dealer utilization heatmap</div>
+          </div>
+          <!-- renderDealerHeatmap writes here -->
+          <div class="dealer-heatmap" id="dealer-table"></div>
+          <div class="heatmap-legend" id="heatmap-legend">
+            <span><span class="swatch util-vhigh"></span> ≥90%</span>
+            <span><span class="swatch util-high"></span> 75–89%</span>
+            <span><span class="swatch util-good"></span> 65–74%</span>
+            <span><span class="swatch util-mid"></span> 50–64%</span>
+            <span><span class="swatch util-low"></span> 40–49%</span>
+            <span><span class="swatch util-vlow"></span> &lt;40%</span>
+          </div>
+        </div>
+        <div class="trend-card" id="scatter-panel">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px">
+            <div class="trend-card-label" id="scatter-title">Utilization vs rented cars</div>
+            <span style="color: var(--muted); font-size: 0.7rem">Size: cars in service</span>
+          </div>
+          <div id="chart-scatter" style="min-height: 280px"></div>
+          <div id="scatter-footnote" style="color: var(--muted); margin-top: 8px; font-size: 0.72rem; line-height: 1.4">
+            Both axes contribute positively to dealer score under additive scoring (<code>w_util</code> &amp; <code>w_rented</code>). Top-right cluster = best candidates.
+          </div>
+        </div>
+      </div>
+
+      <!-- Watchlist (moved before Top Moves) -->
+      <div class="section-head" style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;">
+        <div>
+          <h2>
+            Watchlist
+            <span class="ai-badge" title="Alerts are summarized and ranked by an AI agent from fleet state, using only values present in the source data.">
+              <span class="ai-badge-dot" aria-hidden="true"></span>AI-summarized
+            </span>
+          </h2>
+          <p class="watchlist-meta">
+            <span>Generated <span id="watchlist-time">never</span><span id="watchlist-time-abs" class="watchlist-time-abs"></span></span>
+            <span id="watchlist-source">Fleet data</span>
+          </p>
+        </div>
+        <button class="btn-ghost" id="btn-watchlist-refresh" onclick="refreshWatchlist()" style="flex-shrink: 0;">
+          <span id="watchlist-refresh-icon" style="display: inline-flex; align-items: center;">↻</span>
+          <span id="watchlist-refresh-label">Refresh</span>
+        </button>
+      </div>
+      <div id="home-watchlist">
+        <!-- renderHomeWatchlist writes here; populated by /api/watchlist/refresh -->
+      </div>
+
+      <!-- Top moves this week -->
+      <div class="section-head" style="margin-top: 28px">
+        <h2>Top moves this week</h2>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;" id="home-top-moves">
+        <!-- renderHomeTopMoves writes here -->
+      </div>
+
+      <!-- Methodology -->
+      <details class="mt-4" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-top: 24px">
+        <summary style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600">
+          <span style="color: var(--accent)">ⓘ</span>
+          How allocations are decided
+        </summary>
+        <div style="margin-top: 14px; font-size: 0.82rem; color: var(--muted); line-height: 1.55">
+          <p style="margin-bottom: 8px">Each vehicle is matched to the dealer that maximises a calibrated score combining destination utilisation, absolute rented count, distance (with carrier-cost weighting), and annual property tax.</p>
+          <p>Weights from a 4-D Pareto sweep (81,920 ILP solves) plus a 2026-04-24 cost-aware <code class="text-info" style="color: var(--accent)">w_dist</code> override. Calibration writeup available on request.</p>
+        </div>
+      </details>
+    </div>
+
+    <!-- PAGE 1: Fleet Inventory -->
+    <div class="page" id="page-fleet">
+      <div class="fleet-header">
+        <div class="fleet-title">
+          <h2>Fleet Inventory</h2>
+          <span class="fleet-subtitle" id="fleet-subtitle">Loading...</span>
+        </div>
+        <div class="fleet-actions">
+          <div class="fleet-filters" id="fleet-filters">
+            <button class="filter-btn active" onclick="filterFleet('all', event)">All</button>
+            <button class="filter-btn" onclick="filterFleet('Incoming', event)">Incoming</button>
+            <button class="filter-btn" onclick="filterFleet('Grounded', event)">Grounded</button>
+            <button class="filter-btn" onclick="filterFleet('Transporting', event)">Transporting</button>
+            <button class="filter-btn" onclick="filterFleet('Delivered', event)">Delivered</button>
+          </div>
+          <div class="week-picker-wrap">
+            <button class="week-picker-btn" id="week-picker-btn" onclick="toggleWeekPicker()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span id="week-picker-label">All Weeks</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="week-calendar" id="week-calendar"></div>
+          </div>
+          <button class="btn-allocate" id="btn-allocate" onclick="allocateSelected()" disabled>
+            Allocate Selected (<span id="selected-count">0</span>)
+          </button>
+        </div>
+      </div>
+
+      <!-- Fleet KPIs -->
+      <div class="fleet-kpis" id="fleet-kpis"></div>
+
+      <!-- Fleet Table -->
+      <div class="fleet-table-wrap" id="fleet-table-wrap">
+        <div class="loading"><div class="spinner"></div> Loading fleet inventory...</div>
+      </div>
+    </div>
+
+    <!-- PAGE 1: Weekly Allocation -->
+    <div class="page" id="page-weekly">
+      <div class="batch-header">
+        <div class="batch-title">
+          <h2>Weekly Vehicle Allocation</h2>
+          <span class="batch-date" id="batch-date"></span>
+        </div>
+        <div class="batch-actions" id="batch-actions">
+          <div class="toggle-group">
+            <span class="toggle-label">Algorithm</span>
+            <div class="method-toggle" id="algorithm-toggle" title="Switches the view between the three algorithms pre-computed by Allocate Selected. No re-run is triggered.">
+              <button class="method-btn active" onclick="setAlgorithm('additive')">Additive ILP</button>
+              <button class="method-btn" onclick="setAlgorithm('bucket')">Bucket ILP</button>
+              <button class="method-btn" onclick="setAlgorithm('greedy')">Greedy</button>
+            </div>
+            <span class="info-icon" onclick="showInfoPopover(event, 'algorithm')">ⓘ</span>
+          </div>
+          <button class="btn-confirm" id="btn-confirm" onclick="confirmAllocation()" style="display:none">Confirm Allocation</button>
+        </div>
+      </div>
+
+      <!-- Batch KPIs -->
+      <div class="batch-kpis" id="batch-kpis"></div>
+
+      <!-- Weekly Toolbar: filters + batch select -->
+      <div class="weekly-toolbar" id="weekly-toolbar" style="display:none">
+        <div class="wt-filters">
+          <div class="wt-group">
+            <label class="wt-label">Show</label>
+            <div class="wt-toggle" id="wt-assigned-toggle">
+              <button class="wt-btn active" onclick="setWeeklyFilter('assigned')">Assigned Only</button>
+              <button class="wt-btn" onclick="setWeeklyFilter('all')">All</button>
+            </div>
+          </div>
+          <div class="wt-group">
+            <label class="wt-label">Source</label>
+            <select class="wt-select" id="wt-source-filter" onchange="applyWeeklyFilters()">
+              <option value="">All Sources</option>
+            </select>
+          </div>
+          <div class="wt-group">
+            <label class="wt-label">State</label>
+            <select class="wt-select" id="wt-state-filter" onchange="applyWeeklyFilters()">
+              <option value="">All States</option>
+            </select>
+          </div>
+          <div class="wt-group">
+            <label class="wt-label">Week</label>
+            <select class="wt-select" id="wt-week-filter" onchange="applyWeeklyFilters()">
+              <option value="">All Weeks</option>
+            </select>
+          </div>
+        </div>
+        <div class="wt-batch">
+          <button class="wt-batch-btn" onclick="weeklySelectAll()" title="Select all visible assigned vehicles">Select All</button>
+          <button class="wt-batch-btn" onclick="weeklyDeselectAll()" title="Deselect all">Deselect All</button>
+          <span class="wt-batch-count" id="wt-batch-count">0 selected</span>
+        </div>
+      </div>
+
+      <!-- Vehicle Cards -->
+      <div class="vehicle-list" id="vehicle-list">
+        <div class="weekly-empty" id="weekly-empty">
+          <div class="weekly-empty-icon">⚡</div>
+          <div class="weekly-empty-title">No Allocation Yet</div>
+          <div class="weekly-empty-sub">Select vehicles in <a href="#" onclick="switchPage('fleet');return false">Fleet Inventory</a> and click <strong>Allocate Selected</strong> to run the optimizer.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 3: Batch Overview (per-batch only — fleet-wide content moved to Home) -->
+    <div class="page" id="page-overview">
+
+      <!-- Title row -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 12px">
+        <div>
+          <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0">Batch Overview</h2>
+          <div style="color: var(--muted); font-size: 0.78rem; margin-top: 4px" id="overview-batch-sub">
+            Run an allocation in <a href="#" onclick="switchPage('fleet');return false" style="color: var(--accent); text-decoration: none">Fleet Inventory</a> to populate this view.
+          </div>
+        </div>
+      </div>
+
+      <!-- Per-batch KPIs (Vehicles / Assigned / Rank-1 / Avg Util / Distance) -->
+      <div class="kpi-grid" id="kpi-grid"></div>
+
+      <!-- ILP vs Greedy banner + comparison -->
+      <div class="algo-banner inactive" id="algo-banner">
+        <div class="algo-banner-label">Optimization Method: <strong id="algo-method-label">V2 Integer Linear Programming (ILP)</strong><span class="info-icon" onclick="showInfoPopover(event, 'algo_comparison')">ⓘ</span></div>
+        <div class="algo-banner-sub" id="algo-banner-sub">Run an allocation to see ILP vs Greedy comparison</div>
+        <div class="algo-banner-sub" id="algo-mode-detail" style="margin-top:4px; font-size:0.74rem; color: var(--muted); display:none"></div>
+      </div>
+      <div id="algo-comparison"></div>
+
+      <!-- Allocation Routes Map (per-batch) -->
+      <div class="section-label" id="alloc-section-label">Current Allocation Routes</div>
+      <div class="panel" id="map-panel" style="min-height: 360px">
+        <div class="panel-title">Allocation routes</div>
+        <div id="map-container"></div>
+        <button class="map-fullscreen-btn" onclick="toggleMapFullscreen()" title="Toggle fullscreen">⛶</button>
+      </div>
+
+      <!-- Per-batch detail: Rank Distribution + Per-Dealer Load -->
+      <div class="section-label">Per-batch detail</div>
+      <div style="display: grid; grid-template-columns: 5fr 7fr; gap: 12px;">
+        <div class="panel">
+          <div class="panel-title">Rank distribution</div>
+          <div id="chart-rank-dist"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Load per dealer</div>
+          <div id="chart-dealer-load"></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Chat Panel (right) — hidden on Home tab, visible on Fleet / Weekly / Batch Overview -->
+  <div class="chat-panel" id="chat-panel" style="display: none">
+    <div class="chat-popout-bar" id="chat-popout-bar">
+      <span class="chat-popout-title">Agent</span>
+    </div>
+    <button class="chat-popout-btn" id="chat-layout-toggle" type="button" onclick="toggleChatFloat()" title="Pop out chat" aria-label="Pop out chat" aria-pressed="false">↗</button>
+    <div class="chat-messages" id="chat-messages">
+      <div class="chat-welcome" id="chat-welcome">
+        <button type="button" class="welcome-primary" onclick="askSample(this)">How do I use this?</button>
+        <div class="welcome-grid">
+          <div class="welcome-group">
+            <div class="welcome-group-label">Review allocations</div>
+            <button type="button" class="chip" onclick="askSample(this)">Why was this VIN assigned here?</button>
+            <button type="button" class="chip" onclick="askSample(this)">Which vehicles need manual review?</button>
+          </div>
+          <div class="welcome-group">
+            <div class="welcome-group-label">Compare options</div>
+            <button type="button" class="chip" onclick="askSample(this)">What changes if I override this VIN?</button>
+            <button type="button" class="chip" onclick="askSample(this)">Compare optimizer vs nearest-dealer routing</button>
+          </div>
+          <div class="welcome-group">
+            <div class="welcome-group-label">Understand the logic</div>
+            <button type="button" class="chip" onclick="askSample(this)">How does the optimizer decide?</button>
+            <button type="button" class="chip" onclick="askSample(this)">Which dealer constraints matter most?</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-quota-banner" id="chat-quota-banner" role="status" aria-live="polite">
+      <span class="quota-dot"></span>
+      <span class="quota-text">
+        Checking chat availability...
+        <strong id="quota-remaining" hidden>0</strong>
+        <span id="quota-noun" hidden>messages</span>
+      </span>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="chat-input" placeholder="Checking chat availability..." disabled
+             onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-send" id="chat-send" onclick="sendChat()" disabled>↑</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Hidden template for chat welcome (used by reset) -->
+<template id="chat-welcome-tpl">
+  <div class="chat-welcome" id="chat-welcome">
+    <button type="button" class="welcome-primary" onclick="askSample(this)">How do I use this?</button>
+        <div class="welcome-grid">
+      <div class="welcome-group">
+        <div class="welcome-group-label">Review allocations</div>
+        <button type="button" class="chip" onclick="askSample(this)">Why was this VIN assigned here?</button>
+        <button type="button" class="chip" onclick="askSample(this)">Which vehicles need manual review?</button>
+      </div>
+      <div class="welcome-group">
+        <div class="welcome-group-label">Compare options</div>
+        <button type="button" class="chip" onclick="askSample(this)">What changes if I override this VIN?</button>
+        <button type="button" class="chip" onclick="askSample(this)">Compare optimizer vs nearest-dealer routing</button>
+      </div>
+      <div class="welcome-group">
+        <div class="welcome-group-label">Understand the logic</div>
+        <button type="button" class="chip" onclick="askSample(this)">How does the optimizer decide?</button>
+        <button type="button" class="chip" onclick="askSample(this)">Which dealer constraints matter most?</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- AI Processing Animation Overlay (v2 — CSS particles replace canvas physics) -->
+<div class="ai-overlay" id="ai-overlay">
+  <!-- Canvas kept for backward compat but hidden via CSS -->
+  <canvas id="ai-canvas"></canvas>
+
+  <!-- CSS particle system (orbiting around central orb) -->
+  <div class="ai-particle p1"></div>
+  <div class="ai-particle p2"></div>
+  <div class="ai-particle p3"></div>
+  <div class="ai-particle p4"></div>
+  <div class="ai-particle p5"></div>
+  <div class="ai-particle p6"></div>
+  <div class="ai-particle p7"></div>
+  <div class="ai-particle p8"></div>
+
+  <!-- Factor labels on wider orbits -->
+  <div class="ai-particle-label l1">UTIL_RATE</div>
+  <div class="ai-particle-label l2">Rented demand</div>
+  <div class="ai-particle-label l3">Cost-aware distance</div>
+
+  <!-- Central orb -->
+  <div class="ai-orb"></div>
+  <div class="ai-orb-label">HCA</div>
+
+  <!-- Status text (kept ids so app.js can still rotate status text) -->
+  <div class="ai-center-label" id="ai-center-label">
+    <div class="ai-center-text">Optimizing</div>
+    <div class="ai-center-sub" id="ai-center-sub">Analyzing factors...</div>
+  </div>
+</div>
+
+<!-- Mobile chat toggle (≤600px). Tapping opens the chat-panel as a slide-up
+     drawer; tapping the backdrop or the close affordance dismisses it. Hidden
+     on tablet / desktop by CSS — the chat panel becomes the right sidebar there. -->
+<button class="chat-fab" id="chat-fab" type="button"
+        onclick="toggleChatDrawer()" aria-label="Open chat assistant">💬</button>
+<div class="chat-fab-backdrop" id="chat-fab-backdrop" onclick="toggleChatDrawer(false)"></div>
+
+<script src="/static/app.js?v=demo-pipeline-20260923"></script>
+</body>
+</html>

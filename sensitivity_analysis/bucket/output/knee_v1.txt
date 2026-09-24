@@ -1,0 +1,33 @@
+Read 81,920 rows from sensitivity_analysis/bucket/output/sweep_v1.parquet
+Unique points: 1024  |  Scenarios per point: 80
+
+=== TOP CANDIDATES (closest to 4-D utopia) ===
+ point_id  bucket_A  bucket_B  bucket_C  bucket_D  w_dist  w_tax  avg_in_service_at_dest  avg_util_at_dest  avg_distance  avg_annual_tax  hhi_concentration  rank1_pct  dist_to_utopia
+      460    3.7203    2.8848    0.7957    0.6498  5.2334 2.1896                 35.1340            0.8494      373.2077         74.2905             0.1160    60.6528          0.6278
+      414    4.9798    4.4384    1.5937    0.3982  3.5787 1.4588                 35.0208            0.8484      366.8352         74.7356             0.1154    63.7685          0.6279
+      658    4.7918    2.9805    1.4043    1.1695 10.0880 4.1586                 35.6756            0.8549      384.7171         83.0319             0.1182    57.9219          0.6320
+      755    4.7420    3.0019    0.8466    0.6060  9.8877 3.9035                 35.7007            0.8554      379.0738         86.7790             0.1184    59.5653          0.6328
+      916    4.2038    3.6121    1.1329    1.0225  4.5891 1.4494                 34.9066            0.8454      337.3768         90.7972             0.1108    71.3389          0.6457
+      495    4.3240    2.4031    1.4038    1.3259 10.9715 3.9357                 35.9212            0.8553      369.6748         99.3589             0.1192    61.0138          0.6484
+      597    4.5269    3.4736    2.7453    0.4914  5.0756 2.3854                 36.0204            0.8587      414.8855         80.9933             0.1240    54.9880          0.6506
+      293    4.7407    3.4102    2.7081    2.1509  9.6905 3.0718                 34.8130            0.8393      323.0060         91.8624             0.1082    69.4479          0.6521
+      900    4.3791    2.3381    1.8731    0.8435 11.7172 4.1963                 35.3106            0.8406      355.7731         89.7730             0.1141    61.5806          0.6555
+      620    3.0728    1.2950    0.9458    0.4122  8.9302 3.8618                 35.4397            0.8419      387.5715         77.7877             0.1177    56.9546          0.6563
+
+=== AXIS RANGES (across all sweep points, after per-point averaging) ===
+  avg_in_service_at_dest        min=27.1311  max=38.4528  mean=32.6677
+  avg_util_at_dest              min=0.7040  max=0.8902  mean=0.8081
+  avg_distance                  min=161.1404  max=690.5181  mean=304.0339
+  avg_annual_tax                min=1.5008  max=232.0962  mean=105.5337
+  hhi_concentration             min=0.0681  max=0.1483  mean=0.1014
+
+=== KNEE PICK ===
+  bucket_mults = [3.7203, 2.8848, 0.7957, 0.6498]
+  w_dist       = 5.2334
+  w_tax        = 2.1896
+  avg_in_service_at_dest = 35.1340
+  avg_util_at_dest       = 0.8494
+  avg_distance           = 373.2077
+  avg_annual_tax         = 74.2905
+  hhi_concentration      = 0.1160
+  rank1_pct              = 60.6528

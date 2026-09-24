@@ -1,0 +1,50 @@
+# Everything on this branch should be checked in except the items below.
+# Rule of thumb: exclude only user-local state, build artifacts, and secrets.
+
+# ── Codex local state ──────────────────────────────────────
+.codex/
+
+# ── Generated local outputs ────────────────────────────────
+outputs/
+
+# ── Python build artifacts ─────────────────────────────────
+__pycache__/
+*.py[cod]
+*.so
+*.o
+*.out
+
+# ── Virtual environments (recreate via start.sh) ──────────
+.venv/
+docs/.venv/
+venv/
+.env/
+
+# ── Jupyter ───────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── Secrets ───────────────────────────────────────────────
+.env
+*.env
+
+# ── OS cruft ──────────────────────────────────────────────
+.DS_Store
+*.log
+
+# ── Cloud provider local cache ────────────────────────────
+.wrangler/
+
+# ── Runtime state (per-host, not source) ─────────────────
+app/last_watchlist.json
+
+# ── Deployment kit tarballs (built by deploy/pack.sh) ────
+faas-demo-kit-*.tar.gz
+.venv/
+__pycache__/
+*.pyc
+data_csv/VALIDATION_REPORT.md
+app/server.log
+last_watchlist.json
+
+# ── Agent CLI scratch working dirs (empty, per-host) ──────
+app/var/

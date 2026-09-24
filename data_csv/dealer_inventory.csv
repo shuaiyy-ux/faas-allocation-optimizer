@@ -1,0 +1,31 @@
+DEALER_CODE,DEALER_NAME,LOCATION,STATE,ZIPCODE,TRUE_CAPACITY,DELIVERED_COUNT,LATITUDE,LONGITUDE
+FD01,FaaS_Dealer_Harbor,"Des Moines, IA",IA,50309,26,19,41.5118,-93.6044
+FD02,FaaS_Dealer_Summit,"Charleston, SC",SC,29401,35,32,32.8090,-79.8519
+FD03,FaaS_Dealer_Cedar,"Burlington, VT",VT,05401,22,16,44.5013,-73.2339
+FD04,FaaS_Dealer_Prairie,"Cheyenne, WY",WY,82001,35,28,41.2190,-104.7576
+FD05,FaaS_Dealer_Canyon,"Milwaukee, WI",WI,53201,27,15,42.9875,-87.8740
+FD06,FaaS_Dealer_Ridge,"Oklahoma City, OK",OK,73101,32,26,35.4183,-97.4642
+FD07,FaaS_Dealer_Meadow,"Louisville, KY",KY,40202,19,12,38.2552,-85.6503
+FD08,FaaS_Dealer_Coastal,"Hartford, CT",CT,06103,19,10,41.7878,-72.6268
+FD09,FaaS_Dealer_Granite,"Denver, CO",CO,80201,56,42,39.7346,-105.0448
+FD10,FaaS_Dealer_Bayview,"Minneapolis, MN",MN,55401,34,31,44.9019,-93.3243
+FD11,FaaS_Dealer_Maple,"Nashville, TN",TN,37201,29,24,36.2334,-86.8398
+FD12,FaaS_Dealer_Juniper,"Boise, ID",ID,83702,27,23,43.6834,-116.2650
+FD13,FaaS_Dealer_Oakwood,"Tucson, AZ",AZ,85701,40,30,32.2652,-110.9399
+FD14,FaaS_Dealer_Willow,"Omaha, NE",NE,68102,22,20,41.3016,-95.9257
+FD15,FaaS_Dealer_Redrock,"Little Rock, AR",AR,72201,36,27,34.7964,-92.2322
+FD16,FaaS_Dealer_Sunset,"Seattle, WA",WA,98101,37,29,47.6428,-122.3509
+FD17,FaaS_Dealer_Aspen,"Birmingham, AL",AL,35203,31,24,33.5309,-86.7658
+FD18,FaaS_Dealer_Birch,"Kansas City, MO",MO,64108,47,39,39.0533,-94.5891
+FD19,FaaS_Dealer_Cypress,"Las Vegas, NV",NV,89101,22,8,36.2098,-115.1882
+FD20,FaaS_Dealer_Laurel,"Jacksonville, FL",FL,32202,43,40,30.2582,-81.6601
+FD21,FaaS_Dealer_Mesa,"Atlanta, GA",GA,30301,24,18,33.7334,-84.4671
+FD22,FaaS_Dealer_Pioneer,"New Orleans, LA",LA,70112,52,45,29.9396,-90.0031
+FD23,FaaS_Dealer_Quarry,"Salt Lake City, UT",UT,84101,24,22,40.7266,-111.9392
+FD24,FaaS_Dealer_Rainier,"Jackson, MS",MS,39201,46,36,32.3023,-90.2509
+FD25,FaaS_Dealer_Sequoia,"Charlotte, NC",NC,28201,34,25,35.3117,-80.8526
+FD26,FaaS_Dealer_Timber,"Portland, OR",OR,97201,44,35,45.5277,-122.6199
+FD27,FaaS_Dealer_Valley,"Tampa, FL",FL,33601,42,33,27.8790,-82.4900
+FD28,FaaS_Dealer_Harvest,"Miami, FL",FL,33101,47,38,25.7519,-80.2245
+FD29,FaaS_Dealer_Orchard,"Richmond, VA",VA,23219,39,28,37.5723,-77.4645
+FD30,FaaS_Dealer_Beacon,"Albany, NY",NY,12207,37,34,42.6886,-73.8091

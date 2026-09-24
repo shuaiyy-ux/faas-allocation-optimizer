@@ -1,0 +1,1129 @@
+{
+ "signals": [
+  {
+   "id": "sat_FD02",
+   "type": "saturation",
+   "severity": "medium",
+   "metric": {
+    "name": "util_rate",
+    "actual": 0.875,
+    "threshold": 0.85
+   },
+   "context": {
+    "dealer_code": "FD02",
+    "dealer_name": "FaaS_Dealer_Summit",
+    "state": "SC",
+    "rented": 28,
+    "in_service": 32,
+    "idle_capacity": 4,
+    "util_pct": 87
+   },
+   "recommended_action": "raise_cap"
+  },
+  {
+   "id": "sat_FD09",
+   "type": "saturation",
+   "severity": "critical",
+   "metric": {
+    "name": "util_rate",
+    "actual": 0.952,
+    "threshold": 0.85
+   },
+   "context": {
+    "dealer_code": "FD09",
+    "dealer_name": "FaaS_Dealer_Granite",
+    "state": "CO",
+    "rented": 40,
+    "in_service": 42,
+    "idle_capacity": 2,
+    "util_pct": 95
+   },
+   "recommended_action": "raise_cap"
+  },
+  {
+   "id": "sat_FD18",
+   "type": "saturation",
+   "severity": "medium",
+   "metric": {
+    "name": "util_rate",
+    "actual": 0.897,
+    "threshold": 0.85
+   },
+   "context": {
+    "dealer_code": "FD18",
+    "dealer_name": "FaaS_Dealer_Birch",
+    "state": "MO",
+    "rented": 35,
+    "in_service": 39,
+    "idle_capacity": 4,
+    "util_pct": 89
+   },
+   "recommended_action": "raise_cap"
+  },
+  {
+   "id": "sat_FD20",
+   "type": "saturation",
+   "severity": "high",
+   "metric": {
+    "name": "util_rate",
+    "actual": 0.9,
+    "threshold": 0.85
+   },
+   "context": {
+    "dealer_code": "FD20",
+    "dealer_name": "FaaS_Dealer_Laurel",
+    "state": "FL",
+    "rented": 36,
+    "in_service": 40,
+    "idle_capacity": 4,
+    "util_pct": 90
+   },
+   "recommended_action": "raise_cap"
+  },
+  {
+   "id": "sat_FD22",
+   "type": "saturation",
+   "severity": "critical",
+   "metric": {
+    "name": "util_rate",
+    "actual": 0.956,
+    "threshold": 0.85
+   },
+   "context": {
+    "dealer_code": "FD22",
+    "dealer_name": "FaaS_Dealer_Pioneer",
+    "state": "LA",
+    "rented": 43,
+    "in_service": 45,
+    "idle_capacity": 2,
+    "util_pct": 95
+   },
+   "recommended_action": "raise_cap"
+  },
+  {
+   "id": "sat_FD24",
+   "type": "saturation",
+   "severity": "medium",
+   "metric": {
+    "name": "util_rate",
+    "actual": 0.889,
+    "threshold": 0.85
+   },
+   "context": {
+    "dealer_code": "FD24",
+    "dealer_name": "FaaS_Dealer_Rainier",
+    "state": "MS",
+    "rented": 32,
+    "in_service": 36,
+    "idle_capacity": 4,
+    "util_pct": 88
+   },
+   "recommended_action": "raise_cap"
+  },
+  {
+   "id": "sat_FD30",
+   "type": "saturation",
+   "severity": "medium",
+   "metric": {
+    "name": "util_rate",
+    "actual": 0.882,
+    "threshold": 0.85
+   },
+   "context": {
+    "dealer_code": "FD30",
+    "dealer_name": "FaaS_Dealer_Beacon",
+    "state": "NY",
+    "rented": 30,
+    "in_service": 34,
+    "idle_capacity": 4,
+    "util_pct": 88
+   },
+   "recommended_action": "raise_cap"
+  },
+  {
+   "id": "stuck_4wk",
+   "type": "stuck_vehicles",
+   "severity": "high",
+   "metric": {
+    "name": "stuck_count",
+    "actual": 650,
+    "threshold_weeks": 4
+   },
+   "context": {
+    "total_stuck": 650,
+    "weeks_threshold": 4,
+    "top_source": "D049",
+    "top_source_count": 13,
+    "source_count": 50,
+    "oldest_week": "2025-10-06"
+   },
+   "recommended_action": "review_or_defer"
+  },
+  {
+   "id": "underutil_FD01",
+   "type": "underutilized",
+   "severity": "low",
+   "metric": {
+    "name": "util_rate",
+    "actual": 0.421,
+    "threshold": 0.55
+   },
+   "context": {
+    "dealer_code": "FD01",
+    "dealer_name": "FaaS_Dealer_Harbor",
+    "state": "IA",
+    "rented": 8,
+    "in_service": 19,
+    "idle_capacity": 11,
+    "util_pct": 42
+   },
+   "recommended_action": "route_more_vehicles"
+  },
+  {
+   "id": "underutil_FD03",
+   "type": "underutilized",
+   "severity": "low",
+   "metric": {
+    "name": "util_rate",
+    "actual": 0.375,
+    "threshold": 0.55
+   },
+   "context": {
+    "dealer_code": "FD03",
+    "dealer_name": "FaaS_Dealer_Cedar",
+    "state": "VT",
+    "rented": 6,
+    "in_service": 16,
+    "idle_capacity": 10,
+    "util_pct": 37
+   },
+   "recommended_action": "route_more_vehicles"
+  },
+  {
+   "id": "underutil_FD05",
+   "type": "underutilized",
+   "severity": "low",
+   "metric": {
+    "name": "util_rate",
+    "actual": 0.4,
+    "threshold": 0.55
+   },
+   "context": {
+    "dealer_code": "FD05",
+    "dealer_name": "FaaS_Dealer_Canyon",
+    "state": "WI",
+    "rented": 6,
+    "in_service": 15,
+    "idle_capacity": 9,
+    "util_pct": 40
+   },
+   "recommended_action": "route_more_vehicles"
+  },
+  {
+   "id": "underutil_FD07",
+   "type": "underutilized",
+   "severity": "low",
+   "metric": {
+    "name": "util_rate",
+    "actual": 0.333,
+    "threshold": 0.55
+   },
+   "context": {
+    "dealer_code": "FD07",
+    "dealer_name": "FaaS_Dealer_Meadow",
+    "state": "KY",
+    "rented": 4,
+    "in_service": 12,
+    "idle_capacity": 8,
+    "util_pct": 33
+   },
+   "recommended_action": "route_more_vehicles"
+  },
+  {
+   "id": "underutil_FD08",
+   "type": "underutilized",
+   "severity": "low",
+   "metric": {
+    "name": "util_rate",
+    "actual": 0.4,
+    "threshold": 0.55
+   },
+   "context": {
+    "dealer_code": "FD08",
+    "dealer_name": "FaaS_Dealer_Coastal",
+    "state": "CT",
+    "rented": 4,
+    "in_service": 10,
+    "idle_capacity": 6,
+    "util_pct": 40
+   },
+   "recommended_action": "route_more_vehicles"
+  },
+  {
+   "id": "underutil_FD21",
+   "type": "underutilized",
+   "severity": "low",
+   "metric": {
+    "name": "util_rate",
+    "actual": 0.389,
+    "threshold": 0.55
+   },
+   "context": {
+    "dealer_code": "FD21",
+    "dealer_name": "FaaS_Dealer_Mesa",
+    "state": "GA",
+    "rented": 7,
+    "in_service": 18,
+    "idle_capacity": 11,
+    "util_pct": 38
+   },
+   "recommended_action": "route_more_vehicles"
+  },
+  {
+   "id": "srcpress_D049",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D049",
+    "state": "NV",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D010",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D010",
+    "state": "PA",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D019",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D019",
+    "state": "MI",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D002",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D002",
+    "state": "CA",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D027",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D027",
+    "state": "TN",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D017",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D017",
+    "state": "AK",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D034",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D034",
+    "state": "TX",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D037",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D037",
+    "state": "ID",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D041",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D041",
+    "state": "OK",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D011",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D011",
+    "state": "IA",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D022",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D022",
+    "state": "MN",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D018",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D018",
+    "state": "DE",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D003",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D003",
+    "state": "NM",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D033",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D033",
+    "state": "CA",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D040",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D040",
+    "state": "AR",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D038",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D038",
+    "state": "FL",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D006",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D006",
+    "state": "WA",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D050",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D050",
+    "state": "OR",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D036",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D036",
+    "state": "CA",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D005",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D005",
+    "state": "WA",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D042",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D042",
+    "state": "WI",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D046",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D046",
+    "state": "RI",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D023",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D023",
+    "state": "GA",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D009",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D009",
+    "state": "SC",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D039",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D039",
+    "state": "NY",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D013",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D013",
+    "state": "TX",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D031",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D031",
+    "state": "UT",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D014",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D014",
+    "state": "NV",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D048",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D048",
+    "state": "NE",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D026",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D026",
+    "state": "WY",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D024",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D024",
+    "state": "MT",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D032",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D032",
+    "state": "AL",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D029",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D029",
+    "state": "MS",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D001",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D001",
+    "state": "OR",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D015",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D015",
+    "state": "MA",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D030",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D030",
+    "state": "TX",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D035",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D035",
+    "state": "CO",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D012",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D012",
+    "state": "LA",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D045",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D045",
+    "state": "FL",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D007",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D007",
+    "state": "AZ",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D044",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D044",
+    "state": "CT",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D008",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D008",
+    "state": "KS",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D004",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D004",
+    "state": "NC",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D020",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D020",
+    "state": "KY",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D025",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D025",
+    "state": "IN",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D043",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D043",
+    "state": "ND",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D028",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D028",
+    "state": "MO",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D021",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D021",
+    "state": "SD",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D016",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D016",
+    "state": "VA",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  },
+  {
+   "id": "srcpress_D047",
+   "type": "source_pressure",
+   "severity": "medium",
+   "metric": {
+    "name": "grounded_count_at_source",
+    "actual": 13,
+    "threshold": 8
+   },
+   "context": {
+    "source_code": "D047",
+    "state": "OH",
+    "grounded_count": 13
+   },
+   "recommended_action": "prioritize_in_next_batch"
+  }
+ ],
+ "alerts": [
+  {
+   "signal_id": "stuck_4wk",
+   "template_id": "stuck_vehicles_distributed",
+   "severity": "high",
+   "title": "650 vehicles grounded for more than 4 weeks",
+   "body": "All 50 sources have vehicles waiting. The oldest has been grounded since 2025-10-06.",
+   "action_label": "Review"
+  },
+  {
+   "signal_id": "sat_FD30",
+   "template_id": "saturation_single",
+   "severity": "medium",
+   "title": "Beacon (FD30) at 88% utilization",
+   "body": "NY. 30 of 34 cars rented, 4 slots left.",
+   "action_label": "Raise cap"
+  },
+  {
+   "signal_id": "underutil_FD07",
+   "template_id": "underutilized_dealer",
+   "severity": "low",
+   "title": "Meadow (FD07) at 33% utilization",
+   "body": "KY. 4 of 12 cars rented, 8 slots idle.",
+   "action_label": "Route more"
+  },
+  {
+   "signal_id": "underutil_FD03",
+   "template_id": "underutilized_dealer",
+   "severity": "low",
+   "title": "Cedar (FD03) at 37% utilization",
+   "body": "VT. 6 of 16 cars rented, 10 slots idle.",
+   "action_label": "Route more"
+  },
+  {
+   "signal_id": "underutil_FD21",
+   "template_id": "underutilized_dealer",
+   "severity": "low",
+   "title": "Mesa (FD21) at 38% utilization",
+   "body": "GA. 7 of 18 cars rented, 11 slots idle.",
+   "action_label": "Route more"
+  }
+ ],
+ "refreshed_at": null,
+ "count": 5,
+ "max_items": 5,
+ "_seed": "Written by hand from the deterministic signals for the public demo; Refresh regenerates with the agent."
+}

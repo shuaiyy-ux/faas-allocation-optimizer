@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Efficient Frontier — 1,024 Weight Combinations, One Best Pick</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+  body { margin: 0; padding: 28px; background: #06080c; color: #e0e4ea;
+         font-family: 'Inter', system-ui, sans-serif; max-width: 1200px; }
+  h1 { font-size: 1.55rem; margin: 0 0 6px 0; }
+  .subtitle { color: #8b95a5; font-size: 0.92rem; margin-bottom: 18px; line-height: 1.5; }
+  .legend { display: flex; gap: 16px; margin-bottom: 12px; font-size: 0.8rem;
+            color: #c0c7d2; flex-wrap: wrap; }
+  .chip { padding: 6px 12px; border-radius: 4px;
+          background: rgba(255,255,255,0.04); display: flex; align-items: center; gap: 8px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .panel { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+           border-radius: 8px; padding: 14px; }
+  .note { font-size: 0.78rem; color: #8b95a5; margin-top: 14px; line-height: 1.55; }
+  .note b { color: #c0c7d2; }
+  .narrative { margin-top: 18px; background: rgba(255,193,7,0.05);
+               border-left: 3px solid #ffc107; padding: 14px 18px;
+               font-size: 0.87rem; color: #d5dbe3; line-height: 1.6; border-radius: 4px; }
+  .narrative b { color: #ffc107; }
+  .narrative code { background: rgba(255,255,255,0.06); padding: 1px 6px;
+                    border-radius: 3px; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+
+<h1>The Efficient Frontier — 1,024 calibration experiments, one pick</h1>
+<div class="subtitle">
+  Every dot is one weight combination from our 81,920-simulation sweep,
+  averaged across 80 fleet scenarios. <b>Up and to the left is better</b>
+  (more demand captured, lower total cost). The orange dashed curve is
+  the <b>efficient frontier</b> — 155 combinations that cannot be improved
+  on both benefit and cost simultaneously. From those 155, we pick the
+  one <b>geometrically closest to the "dream corner"</b>.
+</div>
+
+<div class="legend">
+  <span class="chip"><span class="dot" style="background:#3c5a9e"></span>
+    869 dominated combinations</span>
+  <span class="chip"><span class="dot" style="background:#ff8a4c"></span>
+    155 on the efficient frontier</span>
+  <span class="chip"><span class="dot" style="background:#ffc107"></span>
+    ⭐ our pick — closest to utopia</span>
+  <span class="chip"><span class="dot" style="background:#00e676"></span>
+    ✧ utopia (dream corner)</span>
+</div>
+
+<div class="panel">
+  <div id="frontier" style="height: 640px;"></div>
+</div>
+
+<div class="narrative">
+  <b>Why this point, out of the 155 on the frontier?</b><br><br>
+  Every dot on the orange curve is Pareto-optimal — no other combination
+  beats it on both benefit and cost. So the choice among those 155 is a
+  question of <b>where on the curve we want to sit</b>, not which curve to
+  chase.<br><br>
+  We pick the point whose straight-line distance to the <b>utopia corner</b>
+  (benefit = 1, cost = 0) is shortest — the green dashed line on the
+  chart. This is the frontier point that's <b>simultaneously highest on
+  benefit AND lowest on cost</b>, with no axis over-optimized at the
+  other's expense.<br><br>
+  Shifting anywhere else along the curve means either <b>spending more
+  money to buy marginal benefit</b> (right along the curve) or
+  <b>sacrificing disproportionate benefit to save a little cost</b> (left
+  along the curve). The ⭐ is the "balanced" choice — the elbow of the
+  trade-off.
+</div>
+
+<div class="note">
+  <b>How the two axes are built</b> — without assuming HCA's dollar rates:
+  <ul style="margin: 6px 0 0 0;">
+    <li><b>Benefit (y)</b> = 50 % normalized <code>avg_rented_at_dest</code>
+      (cars currently rented at the destination dealer, RENTED column)
+      + 50 % normalized <code>avg_util_at_dest</code> (utilization rate
+      at the destination dealer). No dollar assumption — both are data
+      columns we have.</li>
+    <li><b>Cost (x)</b> = 50 % normalized <code>avg_distance</code>
+      (trucking miles) + 50 % normalized <code>avg_annual_tax</code>
+      (property-tax dollars per car per year). Lower = cheaper.</li>
+  </ul>
+  Each raw criterion normalized to <code>[0, 1]</code> against the 1,024-
+  combo observed range. The 2-D projection preserves Pareto dominance;
+  the knee-selection is Euclidean distance to <code>(cost=0, benefit=1)</code>.
+</div>
+
+<script>
+Promise.all([
+  fetch('sweep_frontier.json').then(r => r.json()),
+  fetch('sweep_meta.json').then(r => r.json()),
+]).then(([data, meta]) => {
+  const dominated = data.filter(d => !d.is_front);
+  const frontier  = data.filter(d => d.is_front)
+                        .sort((a, b) => a.cost - b.cost);
+
+  function hover(d) {
+    return (
+      `w = (${d.w_util.toFixed(2)}, ${d.w_rented.toFixed(3)}, ` +
+      `${d.w_dist.toFixed(2)}, ${d.w_tax.toFixed(2)})<br>` +
+      `benefit=${d.benefit.toFixed(3)}, cost=${d.cost.toFixed(3)}<br>` +
+      `rented=${d.avg_rented.toFixed(1)} cars, util=${(d.avg_util*100).toFixed(0)}%<br>` +
+      `dist=${d.avg_dist.toFixed(0)} mi, tax=$${d.avg_tax.toFixed(0)}`
+    );
+  }
+
+  // 1. Dominated cloud (behind)
+  const cloud = {
+    type: 'scatter', mode: 'markers',
+    x: dominated.map(d => d.cost),
+    y: dominated.map(d => d.benefit),
+    marker: { size: 5, color: '#3c5a9e', opacity: 0.45,
+              line: { width: 0 } },
+    text: dominated.map(hover), hoverinfo: 'text',
+    name: 'Dominated', showlegend: false,
+  };
+
+  // 2. Frontier points
+  const front = {
+    type: 'scatter', mode: 'markers',
+    x: frontier.map(d => d.cost),
+    y: frontier.map(d => d.benefit),
+    marker: { size: 7, color: '#ff8a4c',
+              line: { width: 0.5, color: 'rgba(255,138,76,0.8)' } },
+    text: frontier.map(hover), hoverinfo: 'text',
+    name: 'Efficient frontier', showlegend: false,
+  };
+
+  // 3. Frontier line (dashed curve)
+  const frontLine = {
+    type: 'scatter', mode: 'lines',
+    x: frontier.map(d => d.cost),
+    y: frontier.map(d => d.benefit),
+    line: { color: '#ff8a4c', width: 2, dash: 'dot' },
+    hoverinfo: 'skip', showlegend: false,
+  };
+
+  // 4. Our pick — the 4-D knee (gold star)
+  const kneePt = {
+    type: 'scatter', mode: 'markers+text',
+    x: [meta.knee.cost], y: [meta.knee.benefit],
+    marker: { size: 26, color: '#ffc107', symbol: 'star',
+              line: { width: 1.5, color: '#fff' } },
+    text: ['Our pick'], textposition: 'top right',
+    textfont: { size: 12, color: '#ffc107', family: 'Inter' },
+    hovertext: [`⭐ Selected — closest frontier point to utopia<br>` +
+                `w = (${meta.knee.w_util.toFixed(2)}, ${meta.knee.w_rented.toFixed(3)}, ` +
+                `${meta.knee.w_dist.toFixed(2)}, ${meta.knee.w_tax.toFixed(2)})<br>` +
+                `benefit=${meta.knee.benefit.toFixed(3)}, cost=${meta.knee.cost.toFixed(3)}<br>` +
+                `rented=${meta.knee.avg_rented.toFixed(1)} cars, util=${(meta.knee.avg_util*100).toFixed(0)}%<br>` +
+                `dist=${meta.knee.avg_dist.toFixed(0)} mi, tax=$${meta.knee.avg_tax.toFixed(0)}`],
+    hoverinfo: 'text',
+    showlegend: false,
+  };
+
+  // 5. Utopia corner
+  const utopia = {
+    type: 'scatter', mode: 'markers+text',
+    x: [0], y: [1],
+    marker: { size: 20, color: '#00e676', symbol: 'cross-thin',
+              line: { width: 3, color: '#00e676' } },
+    text: ['✧ Utopia'], textposition: 'top right',
+    textfont: { size: 11, color: '#00e676' },
+    hoverinfo: 'text',
+    hovertext: ['Theoretical ideal: all benefit, zero cost.<br>' +
+                'No real weight combination reaches here.'],
+    showlegend: false,
+  };
+
+  // Euclidean distance from utopia (0,1) to the knee
+  const dU = Math.sqrt(meta.knee.cost**2 + (1 - meta.knee.benefit)**2).toFixed(3);
+
+  Plotly.newPlot('frontier',
+    [cloud, frontLine, front, kneePt, utopia],
+    {
+      paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+      font: { family: 'Inter, system-ui, sans-serif', size: 12, color: '#e0e4ea' },
+      margin: { l: 70, r: 40, t: 20, b: 64 },
+      xaxis: {
+        title: '← cheaper    Cost (transportation + property tax)    more expensive →',
+        gridcolor: 'rgba(255,255,255,0.06)',
+        zerolinecolor: 'rgba(255,255,255,0.1)',
+        range: [-0.03, 1.03],
+        constrain: 'domain',
+      },
+      yaxis: {
+        title: '↑ more    Benefit (rented cars + utilization rate)    less ↓',
+        gridcolor: 'rgba(255,255,255,0.06)',
+        zerolinecolor: 'rgba(255,255,255,0.1)',
+        range: [-0.03, 1.03],
+        scaleanchor: 'x',
+        scaleratio: 1,
+      },
+      hovermode: 'closest',
+      showlegend: false,
+      shapes: [
+        // GREEN DASHED LINE from utopia to our pick — the "why this point"
+        { type: 'line',
+          x0: 0, y0: 1,
+          x1: meta.knee.cost, y1: meta.knee.benefit,
+          line: { color: '#00e676', width: 2.5, dash: 'dash' } },
+      ],
+      annotations: [
+        { x: meta.knee.cost / 2, y: (1 + meta.knee.benefit) / 2 + 0.03,
+          text: `closest to utopia = ${dU}<br>(within 0.3 % of minimum<br>among 155 frontier points)`,
+          showarrow: false,
+          font: { color: '#00e676', size: 10.5 },
+          bgcolor: 'rgba(0,230,118,0.1)',
+          bordercolor: '#00e676', borderwidth: 1, borderpad: 4,
+          align: 'center' },
+        { x: 0.1, y: 0.08,
+          text: 'Frontier drops steeply here:<br>saving a little more cost<br>loses a lot of benefit',
+          showarrow: false,
+          font: { color: '#8b95a5', size: 10 },
+          align: 'left',
+          xanchor: 'left' },
+        { x: 0.97, y: 0.96,
+          text: 'Frontier flattens here:<br>paying more cost only<br>buys marginal benefit',
+          showarrow: false,
+          font: { color: '#8b95a5', size: 10 },
+          align: 'right',
+          xanchor: 'right' },
+      ],
+    },
+    { displayModeBar: false, responsive: true });
+});
+</script>
+</body>
+</html>
